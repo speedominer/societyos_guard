@@ -31,8 +31,7 @@ void main() {
               '/history': (context) => const VisitorHistoryScreen(),
               '/exit': (context) => const ExitScreen(),
               '/staff': (context) => const StaffAttendanceScreen(),
-              '/emergencies': (context) =>
-                  const EmergencyListScreen(),
+              '/emergencies': (context) => const EmergencyListScreen(),
             },
           ),
         ),

@@ -29,7 +29,8 @@ class _StaffScanScreenState extends State<StaffScanScreen> {
       setState(() => _status = 'Recording attendance...');
       try {
         final token = scanData.code ?? '';
-        final res = await api.recordAttendance({'token': token, 'gateId': 'GATE_1', 'type': 'scan'});
+        final res = await api.recordAttendance(
+            {'token': token, 'gateId': 'GATE_1', 'type': 'scan'});
         setState(() => _status = res['status'] ?? 'done');
       } catch (e) {
         setState(() => _status = 'Failed');
@@ -45,7 +46,10 @@ class _StaffScanScreenState extends State<StaffScanScreen> {
       appBar: AppBar(title: const Text('Staff QR Scan')),
       body: Column(children: [
         Expanded(child: QRView(key: qrKey, onQRViewCreated: _onQRViewCreated)),
-        Container(height: 64, alignment: Alignment.center, child: Text(_status ?? 'Scan staff QR'))
+        Container(
+            height: 64,
+            alignment: Alignment.center,
+            child: Text(_status ?? 'Scan staff QR'))
       ]),
     );
   }

@@ -12,9 +12,8 @@ class ConnectionBadge extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(websocketStatusProvider);
 
-    final reconnectInfo =
-        ref.watch(websocketReconnectProvider).asData?.value ??
-            {'remaining': 0, 'total': 0};
+    final reconnectInfo = ref.watch(websocketReconnectProvider).asData?.value ??
+        {'remaining': 0, 'total': 0};
 
     final countdown = reconnectInfo['remaining'] ?? 0;
     final total = reconnectInfo['total'] ?? 0;
@@ -30,9 +29,7 @@ class ConnectionBadge extends ConsumerWidget {
 
       case 'reconnecting':
         color = Colors.orange;
-        text = countdown > 0
-            ? 'Reconnecting in ${countdown}s'
-            : 'Reconnecting';
+        text = countdown > 0 ? 'Reconnecting in ${countdown}s' : 'Reconnecting';
         break;
 
       case 'connecting':
@@ -61,9 +58,7 @@ class ConnectionBadge extends ConsumerWidget {
             shape: BoxShape.circle,
           ),
         ),
-
         const SizedBox(width: 6),
-
         Text(
           text,
           style: const TextStyle(
@@ -71,9 +66,7 @@ class ConnectionBadge extends ConsumerWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-
         const SizedBox(width: 8),
-
         if (status == 'reconnecting' && total > 0)
           SizedBox(
             width: 80,
@@ -84,9 +77,7 @@ class ConnectionBadge extends ConsumerWidget {
               color: Colors.orange,
             ),
           ),
-
         const SizedBox(width: 8),
-
         if (status != 'online' && status != 'auth_error')
           IconButton(
             icon: const Icon(Icons.refresh, size: 16),
@@ -100,7 +91,6 @@ class ConnectionBadge extends ConsumerWidget {
               }
             },
           ),
-
         IconButton(
           icon: const Icon(Icons.bug_report, size: 16),
           tooltip: 'Diagnostics',

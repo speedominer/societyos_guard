@@ -26,6 +26,7 @@ class WSStatusNotifier extends StateNotifier<String> {
   }
 }
 
-final websocketStatusProvider = StateNotifierProvider<WSStatusNotifier, String>((ref) {
+final websocketStatusProvider =
+    StateNotifierProvider<WSStatusNotifier, String>((ref) {
   return WSStatusNotifier(ref: ref);
 });

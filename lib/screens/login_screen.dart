@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/api_service.dart';
@@ -20,24 +21,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _loading = true);
     try {
       final api = ApiService(baseUrl: Config.backendBaseUrl);
-      final resp = await api.post('/auth/login', {'phone': _phone.text, 'pin': _pin.text});
+      final resp = await api
+          .post('/auth/login', {'phone': _phone.text, 'pin': _pin.text});
       final body = resp.body.isNotEmpty ? resp.body : '{}';
-      final Map<String, dynamic> parsed = body.isNotEmpty ? (resp.statusCode>=200&&resp.statusCode<300 ? (resp.body.isNotEmpty ? (jsonDecode(resp.body) as Map<String,dynamic>) : {}) : {}) : {};
+      final Map<String, dynamic> parsed = body.isNotEmpty
+          ? (resp.statusCode >= 200 && resp.statusCode < 300
+              ? (resp.body.isNotEmpty
+                  ? (jsonDecode(resp.body) as Map<String, dynamic>)
+                  : {})
+              : {})
+          : {};
       final token = parsed['token']?.toString();
       if (token != null && token.isNotEmpty) {
         await ref.read(authProvider.notifier).setToken(token);
-        if (context.mounted) Navigator.pushReplacementNamed(context, '/dashboard');
+        if (context.mounted)
+          Navigator.pushReplacementNamed(context, '/dashboard');
         return;
       }
       // fallback: accept pin as token for testing
       if (_pin.text.isNotEmpty) {
         await ref.read(authProvider.notifier).setToken(_pin.text);
-        if (context.mounted) Navigator.pushReplacementNamed(context, '/dashboard');
+        if (context.mounted)
+          Navigator.pushReplacementNamed(context, '/dashboard');
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login failed')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login failed')));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login error')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login error')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -50,10 +62,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(children: [
-          TextField(controller: _phone, decoration: const InputDecoration(labelText: 'Phone')),
-          TextField(controller: _pin, decoration: const InputDecoration(labelText: 'PIN/Passcode'), obscureText: true),
+          TextField(
+              controller: _phone,
+              decoration: const InputDecoration(labelText: 'Phone')),
+          TextField(
+              controller: _pin,
+              decoration: const InputDecoration(labelText: 'PIN/Passcode'),
+              obscureText: true),
           const SizedBox(height: 12),
-          _loading ? const CircularProgressIndicator() : ElevatedButton(onPressed: _login, child: const Text('LOGIN'))
+          _loading
+              ? const CircularProgressIndicator()
+              : ElevatedButton(onPressed: _login, child: const Text('LOGIN'))
         ]),
       ),
     );
