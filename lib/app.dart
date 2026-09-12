@@ -10,6 +10,8 @@ import 'screens/login_screen.dart';
 import 'screens/visitor_history_screen.dart';
 import 'screens/emergency_list_screen.dart';
 import 'screens/diagnostics_screen.dart';
+import 'screens/exit_screen.dart';
+import 'screens/staff_attendance_screen.dart';
 import 'providers/auth_provider.dart';
 
 class App extends ConsumerStatefulWidget {
