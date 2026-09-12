@@ -39,20 +39,13 @@ class TelemetryService {
       StreamController.broadcast();
   File? _file;
   bool _initialized = false;
-  /// Optional provider to resolve the application documents directory.
-  /// If null, falls back to `getApplicationDocumentsDirectory()`.
-  final Future<Directory> Function()? documentsDirProvider;
-
-  TelemetryService({this.documentsDirProvider});
 
   /// Initialize persistence (best-effort). Call this once on app start or when diagnostics opened.
   Future<void> init() async {
     if (_initialized) return;
     _initialized = true;
     try {
-      final dir = documentsDirProvider != null
-          ? await documentsDirProvider!()
-          : await getApplicationDocumentsDirectory();
+      final dir = await getApplicationDocumentsDirectory();
       _file = File('${dir.path}/telemetry.json');
       if (await _file!.exists()) {
         final text = await _file!.readAsString();
