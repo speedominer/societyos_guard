@@ -17,6 +17,7 @@ dependencies:
   camera: ^0.10.0+6
   firebase_messaging: ^14.2.4
   flutter_local_notifications: ^13.0.0
+  path_provider: ^2.0.0
 
 dev_dependencies:
   flutter_test:

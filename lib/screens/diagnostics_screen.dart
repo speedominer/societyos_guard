@@ -19,8 +19,16 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
   @override
   void initState() {
     super.initState();
-
-    _events = telemetryService.recent();
+    // initialize persistence and load existing telemetry (best-effort)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await telemetryService.init();
+      } catch (_) {}
+      if (!mounted) return;
+      setState(() {
+        _events = telemetryService.recent();
+      });
+    });
 
     _sub = telemetryService.stream.listen((list) {
       if (!mounted) return;
@@ -45,6 +53,10 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
     setState(() {
       _events = [];
     });
+    // also clear persisted events
+    try {
+      telemetryService.clearPersistent();
+    } catch (_) {}
   }
 
   @override
@@ -63,6 +75,21 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
       appBar: AppBar(
         title: const Text('Diagnostics'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.save_alt),
+            tooltip: 'Export telemetry',
+            onPressed: _events.isEmpty
+                ? null
+                : () async {
+                    final path = await telemetryService.export();
+                    if (!mounted) return;
+                    if (path != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Telemetry exported to: $path')));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to export telemetry')));
+                    }
+                  },
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Clear telemetry',
