@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class TelemetryEvent {
   final DateTime ts;
@@ -17,6 +20,34 @@ class TelemetryService {
   final List<TelemetryEvent> _events = [];
   final StreamController<List<Map<String, dynamic>>> _streamController =
       StreamController.broadcast();
+  File? _file;
+  bool _initialized = false;
+
+  /// Initialize persistence (best-effort). Call this once on app start or when diagnostics opened.
+  Future<void> init() async {
+    if (_initialized) return;
+    _initialized = true;
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      _file = File('${dir.path}/telemetry.json');
+      if (await _file!.exists()) {
+        final text = await _file!.readAsString();
+        final list = jsonDecode(text) as List<dynamic>;
+        for (final item in list) {
+          try {
+            final map = Map<String, dynamic>.from(item as Map);
+            _events.add(TelemetryEvent(map['name']?.toString() ?? 'unknown', Map<String, dynamic>.from(map['details'] ?? {})));
+          } catch (_) {}
+        }
+        // notify listeners of loaded events
+        try {
+          _streamController.add(_events.map((e) => e.toJson()).toList());
+        } catch (_) {}
+      }
+    } catch (_) {
+      // non-fatal: ignore persistence errors
+    }
+  }
 
   void log(String name, Map<String, dynamic> details) {
     // Filter out potential token fields
@@ -28,9 +59,50 @@ class TelemetryService {
     try {
       _streamController.add(_events.map((e) => e.toJson()).toList());
     } catch (_) {}
+    // persist best-effort
+    try {
+      _persist();
+    } catch (_) {}
     // Also print to console for quick debugging
     // ignore: avoid_print
     print('[Telemetry] ${e.ts.toIso8601String()} $name ${filtered}');
+  }
+
+  Future<void> _persist() async {
+    try {
+      if (!_initialized) await init();
+      if (_file == null) return;
+      final encoded = jsonEncode(_events.map((e) => e.toJson()).toList());
+      await _file!.writeAsString(encoded);
+    } catch (_) {}
+  }
+
+  /// Export telemetry to a file, returning the absolute path on success or null on failure.
+  Future<String?> export() async {
+    try {
+      if (!_initialized) await init();
+      if (_file == null) return null;
+      if (!await _file!.exists()) {
+        await _persist();
+      }
+      return _file!.path;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clear telemetry in memory and on disk.
+  Future<void> clearPersistent() async {
+    try {
+      _events.clear();
+      try {
+        _streamController.add([]);
+      } catch (_) {}
+      if (!_initialized) await init();
+      if (_file != null && await _file!.exists()) {
+        await _file!.delete();
+      }
+    } catch (_) {}
   }
 
   List<Map<String, dynamic>> recent() =>
