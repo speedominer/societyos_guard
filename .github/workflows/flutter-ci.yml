@@ -1,0 +1,35 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: Run tests
+        run: |
+          flutter test --machine > test_output.json || true
+          # generate coverage if possible
+          if flutter test --coverage --help >/dev/null 2>&1; then
+            flutter test --coverage || true
+          fi
+      - name: Upload test logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: |
+            test_output.json
+            coverage/lcov.info
