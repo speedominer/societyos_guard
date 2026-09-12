@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -31,7 +30,8 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(mainAxisSize: MainAxisSize.min, children: const [
           Icon(Icons.security, size: 72),
           SizedBox(height: 12),
-          Text('SocietyOS Guard', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+          Text('SocietyOS Guard',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
         ]),
       ),
     );

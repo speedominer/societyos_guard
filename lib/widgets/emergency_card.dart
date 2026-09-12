@@ -12,9 +12,11 @@ class EmergencyCard extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: onTap,
-        leading: CircleAvatar(backgroundColor: color, child: const Icon(Icons.warning)),
+        leading: CircleAvatar(
+            backgroundColor: color, child: const Icon(Icons.warning)),
         title: Text(emergency['flat']?.toString() ?? 'Unknown flat'),
-        subtitle: Text('${emergency['resident'] ?? 'Resident'} • ${emergency['time'] ?? ''}'),
+        subtitle: Text(
+            '${emergency['resident'] ?? 'Resident'} • ${emergency['time'] ?? ''}'),
         trailing: Text(status.toUpperCase()),
       ),
     );

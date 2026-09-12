@@ -12,7 +12,8 @@ class VisitorCard extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: onTap,
-        title: Text(visitor.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        title: Text(visitor.name,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         subtitle: Text('${visitor.purpose} • ${visitor.company ?? ''}'),
         trailing: Text(visitor.phone),
       ),

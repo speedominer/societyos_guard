@@ -23,8 +23,11 @@ class _PhotoCaptureScreenState extends State<PhotoCaptureScreen> {
   Future<void> _initCameras() async {
     try {
       _cameras = await availableCameras();
-      final cam = _cameras!.firstWhere((c) => c.lensDirection == CameraLensDirection.back, orElse: () => _cameras!.first);
-      _controller = CameraController(cam, ResolutionPreset.medium, enableAudio: false);
+      final cam = _cameras!.firstWhere(
+          (c) => c.lensDirection == CameraLensDirection.back,
+          orElse: () => _cameras!.first);
+      _controller =
+          CameraController(cam, ResolutionPreset.medium, enableAudio: false);
       await _controller!.initialize();
     } catch (e) {
       // ignore
@@ -44,20 +47,29 @@ class _PhotoCaptureScreenState extends State<PhotoCaptureScreen> {
       final XFile file = await _controller!.takePicture();
       Navigator.pop(context, File(file.path));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to capture photo')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to capture photo')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_initializing) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    if (_controller == null || !_controller!.value.isInitialized) return Scaffold(body: Center(child: Text('Camera unavailable')));
+    if (_initializing)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (_controller == null || !_controller!.value.isInitialized)
+      return Scaffold(body: Center(child: Text('Camera unavailable')));
 
     return Scaffold(
       appBar: AppBar(title: const Text('Capture Photo')),
       body: Stack(children: [
         CameraPreview(_controller!),
-        Positioned(bottom: 24, left: 0, right: 0, child: Center(child: FloatingActionButton(onPressed: _capture, child: const Icon(Icons.camera_alt))))
+        Positioned(
+            bottom: 24,
+            left: 0,
+            right: 0,
+            child: Center(
+                child: FloatingActionButton(
+                    onPressed: _capture, child: const Icon(Icons.camera_alt))))
       ]),
     );
   }

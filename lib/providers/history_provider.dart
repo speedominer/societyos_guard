@@ -8,7 +8,7 @@ class HistoryNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   final Ref ref;
   StreamSubscription? _sub;
 
-  HistoryNotifier(this.ref): super([]) {
+  HistoryNotifier(this.ref) : super([]) {
     _init();
   }
 
@@ -36,6 +36,7 @@ class HistoryNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   }
 }
 
-final historyProvider = StateNotifierProvider<HistoryNotifier, List<Map<String, dynamic>>>((ref) {
+final historyProvider =
+    StateNotifierProvider<HistoryNotifier, List<Map<String, dynamic>>>((ref) {
   return HistoryNotifier(ref);
 });

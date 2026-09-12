@@ -8,7 +8,7 @@ class EmergencyNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   final Ref ref;
   StreamSubscription? _sub;
 
-  EmergencyNotifier(this.ref): super([]) {
+  EmergencyNotifier(this.ref) : super([]) {
     _init();
   }
 
@@ -27,10 +27,12 @@ class EmergencyNotifier extends StateNotifier<List<Map<String, dynamic>>> {
         state = [payload, ...state];
       } else if (type == 'emergency:updated') {
         final payload = event['payload'] as Map<String, dynamic>? ?? {};
-        state = state.map((e) => e['id'] == payload['id'] ? payload : e).toList();
+        state =
+            state.map((e) => e['id'] == payload['id'] ? payload : e).toList();
       } else if (type == 'emergency:resolved') {
         final id = event['payload']?['id']?.toString();
-        if (id != null) state = state.where((e) => e['id']?.toString() != id).toList();
+        if (id != null)
+          state = state.where((e) => e['id']?.toString() != id).toList();
       }
     });
   }
@@ -42,6 +44,7 @@ class EmergencyNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   }
 }
 
-final emergencyProvider = StateNotifierProvider<EmergencyNotifier, List<Map<String, dynamic>>>((ref) {
+final emergencyProvider =
+    StateNotifierProvider<EmergencyNotifier, List<Map<String, dynamic>>>((ref) {
   return EmergencyNotifier(ref);
 });

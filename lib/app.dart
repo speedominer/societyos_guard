@@ -31,7 +31,8 @@ class _AppState extends ConsumerState<App> {
       if (next == null) {
         _navKey.currentState?.pushNamedAndRemoveUntil('/login', (r) => false);
       } else {
-        _navKey.currentState?.pushNamedAndRemoveUntil('/dashboard', (r) => false);
+        _navKey.currentState
+            ?.pushNamedAndRemoveUntil('/dashboard', (r) => false);
       }
     });
   }

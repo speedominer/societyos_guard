@@ -11,21 +11,29 @@ class ApiService {
 
   ApiService({required this.baseUrl, this.defaultHeaders = const {}});
 
-  Future<http.Response> post(String path, Map<String, dynamic> body, {Map<String,String>? headers}) {
+  Future<http.Response> post(String path, Map<String, dynamic> body,
+      {Map<String, String>? headers}) {
     final uri = Uri.parse('$baseUrl$path');
     return _doRequest('POST', uri, body: body, extraHeaders: headers);
   }
 
-  Future<http.Response> get(String path, {Map<String,String>? headers}) {
+  Future<http.Response> get(String path, {Map<String, String>? headers}) {
     final uri = Uri.parse('$baseUrl$path');
     return _doRequest('GET', uri, extraHeaders: headers);
   }
 
-  Future<http.Response> _doRequest(String method, Uri uri, {Map<String, dynamic>? body, Map<String, String>? extraHeaders}) async {
+  Future<http.Response> _doRequest(String method, Uri uri,
+      {Map<String, dynamic>? body, Map<String, String>? extraHeaders}) async {
     final token = await AuthService().token();
-    final combined = {if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token', ...defaultHeaders, if (extraHeaders != null) ...extraHeaders};
+    final combined = {
+      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+      ...defaultHeaders,
+      if (extraHeaders != null) ...extraHeaders
+    };
     if (method == 'POST') {
-      final res = await http.post(uri, headers: {...combined, 'Content-Type': 'application/json'}, body: jsonEncode(body));
+      final res = await http.post(uri,
+          headers: {...combined, 'Content-Type': 'application/json'},
+          body: jsonEncode(body));
       if (res.statusCode == 401) {
         await AuthService().clear();
       }
@@ -39,7 +47,8 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> registerVisitor(Map<String, dynamic> payload) async {
+  Future<Map<String, dynamic>> registerVisitor(
+      Map<String, dynamic> payload) async {
     final res = await post('/visitors', payload);
     return jsonDecode(res.body) as Map<String, dynamic>;
   }
@@ -53,15 +62,18 @@ class ApiService {
     await post('/entry', payload);
   }
 
-  Future<http.StreamedResponse> recordEntryWithPhoto(Map<String, dynamic> payload, File photo) async {
+  Future<http.StreamedResponse> recordEntryWithPhoto(
+      Map<String, dynamic> payload, File photo) async {
     final uri = Uri.parse('$baseUrl/entry');
     final request = http.MultipartRequest('POST', uri);
     final token = await AuthService().token();
-    if (token != null) request.headers.addAll({'Authorization': 'Bearer $token'});
+    if (token != null)
+      request.headers.addAll({'Authorization': 'Bearer $token'});
     // attach json payload as a field
     request.fields['payload'] = jsonEncode(payload);
     final mimeType = 'image/jpeg';
-    final multipartFile = await http.MultipartFile.fromPath('photo', photo.path, contentType: MediaType.parse(mimeType));
+    final multipartFile = await http.MultipartFile.fromPath('photo', photo.path,
+        contentType: MediaType.parse(mimeType));
     request.files.add(multipartFile);
     return request.send();
   }
@@ -109,7 +121,8 @@ class ApiService {
   }
 
   // Record staff or helper attendance (entry or exit). Backend should dedupe.
-  Future<Map<String, dynamic>> recordAttendance(Map<String, dynamic> payload) async {
+  Future<Map<String, dynamic>> recordAttendance(
+      Map<String, dynamic> payload) async {
     final res = await post('/attendance', payload);
     return jsonDecode(res.body) as Map<String, dynamic>;
   }

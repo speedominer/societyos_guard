@@ -59,7 +59,8 @@ class WebSocketService {
 
       try {
         // Use IOWebSocketChannel to pass headers on io platforms
-        _channel = IOWebSocketChannel.connect(uri, headers: headersMap?.map((k, v) => MapEntry(k, v.toString())));
+        _channel = IOWebSocketChannel.connect(uri,
+            headers: headersMap?.map((k, v) => MapEntry(k, v.toString())));
         _channelSubscription = _channel!.stream.listen((message) {
           try {
             if (message is String) {
@@ -67,7 +68,9 @@ class WebSocketService {
               // Detect auth-related messages from server
               if (parsed is Map<String, dynamic>) {
                 final t = parsed['type']?.toString();
-                if (t == 'auth:invalid' || t == 'auth:expired' || t == 'auth:failed') {
+                if (t == 'auth:invalid' ||
+                    t == 'auth:expired' ||
+                    t == 'auth:failed') {
                   // clear stored token and stop reconnect attempts
                   try {
                     AuthService().clear();
@@ -129,7 +132,11 @@ class WebSocketService {
         _reconnectAttempts = 0;
         _statusController?.add('online');
         // Telemetry: successful connect
-        telemetryService.log(hadAttempts ? 'reconnect_success' : 'connect_success', {'uri': uri.toString(), 'attempts': hadAttempts ? _reconnectAttempts : 0});
+        telemetryService.log(
+            hadAttempts ? 'reconnect_success' : 'connect_success', {
+          'uri': uri.toString(),
+          'attempts': hadAttempts ? _reconnectAttempts : 0
+        });
       } catch (e) {
         _connected = false;
         _connecting = false;
@@ -154,7 +161,11 @@ class WebSocketService {
     } catch (_) {}
     int seconds = (delayMs / 1000).ceil();
     _reconnectTotalSeconds = seconds;
-    telemetryService.log('auto_retry_scheduled', {'attempts': _reconnectAttempts, 'delayMs': delayMs, 'seconds': seconds});
+    telemetryService.log('auto_retry_scheduled', {
+      'attempts': _reconnectAttempts,
+      'delayMs': delayMs,
+      'seconds': seconds
+    });
     // emit initial countdown value
     try {
       _reconnectCountdownController?.add(seconds);
@@ -179,7 +190,8 @@ class WebSocketService {
       try {
         _reconnectTimer?.cancel();
       } catch (_) {}
-      telemetryService.log('auto_retry_attempt', {'attempts': _reconnectAttempts});
+      telemetryService
+          .log('auto_retry_attempt', {'attempts': _reconnectAttempts});
       connect();
     });
   }
@@ -220,7 +232,8 @@ class WebSocketService {
   /// Total seconds for the current reconnect countdown (set when a backoff is scheduled)
   int get reconnectTotalSeconds => _reconnectTotalSeconds;
 
-  Stream<String> get statusStream => _statusController?.stream ?? const Stream.empty();
+  Stream<String> get statusStream =>
+      _statusController?.stream ?? const Stream.empty();
 
   String get currentStatus {
     if (_connected) return 'online';
@@ -250,7 +263,9 @@ class WebSocketService {
     } catch (_) {}
   }
 
-  Stream<int> get reconnectCountdownStream => _reconnectCountdownController?.stream ?? const Stream.empty();
+  Stream<int> get reconnectCountdownStream =>
+      _reconnectCountdownController?.stream ?? const Stream.empty();
 
-  Stream<Map<String, dynamic>> get messages => _controller?.stream ?? const Stream.empty();
+  Stream<Map<String, dynamic>> get messages =>
+      _controller?.stream ?? const Stream.empty();
 }

@@ -12,10 +12,17 @@ class VisitorHistoryScreen extends ConsumerWidget {
     final items = ref.watch(historyProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Visitor History')),
-      body: items.isEmpty ? const Center(child: CircularProgressIndicator()) : RefreshIndicator(
-        onRefresh: () async { ref.refresh(historyProvider); },
-        child: ListView.builder(itemCount: items.length, itemBuilder: (c,i) => GateEventCard(event: GateEvent.fromJson(items[i]))),
-      ),
+      body: items.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () async {
+                ref.refresh(historyProvider);
+              },
+              child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (c, i) =>
+                      GateEventCard(event: GateEvent.fromJson(items[i]))),
+            ),
     );
   }
 }

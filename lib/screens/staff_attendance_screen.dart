@@ -15,9 +15,19 @@ class StaffAttendanceScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(children: [
-          ElevatedButton.icon(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c)=> const StaffScanScreen())), icon: const Icon(Icons.qr_code_scanner), label: const Text('Scan QR')),
+          ElevatedButton.icon(
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (c) => const StaffScanScreen())),
+              icon: const Icon(Icons.qr_code_scanner),
+              label: const Text('Scan QR')),
           const SizedBox(height: 12),
-          ElevatedButton.icon(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c)=> const StaffPinAttendanceScreen())), icon: const Icon(Icons.lock), label: const Text('Enter PIN')),
+          ElevatedButton.icon(
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (c) => const StaffPinAttendanceScreen())),
+              icon: const Icon(Icons.lock),
+              label: const Text('Enter PIN')),
         ]),
       ),
     );

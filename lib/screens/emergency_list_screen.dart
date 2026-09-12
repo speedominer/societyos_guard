@@ -12,10 +12,22 @@ class EmergencyListScreen extends ConsumerWidget {
     final list = ref.watch(emergencyProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Emergencies')),
-      body: list.isEmpty ? const Center(child: Text('No alerts')) : RefreshIndicator(
-        onRefresh: () async { ref.refresh(emergencyProvider); },
-        child: ListView.builder(itemCount: list.length, itemBuilder: (c,i) => EmergencyCard(emergency: list[i], onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c)=> EmergencyDetailScreen(emergency: list[i]))))),
-      ),
+      body: list.isEmpty
+          ? const Center(child: Text('No alerts'))
+          : RefreshIndicator(
+              onRefresh: () async {
+                ref.refresh(emergencyProvider);
+              },
+              child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (c, i) => EmergencyCard(
+                      emergency: list[i],
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (c) =>
+                                  EmergencyDetailScreen(emergency: list[i]))))),
+            ),
     );
   }
 }

@@ -31,7 +31,10 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       final validated = await api.validateQr(scanData.code ?? '');
       // Navigate to validation result screen showing server response
       if (!mounted) return;
-      Navigator.push(context, MaterialPageRoute(builder: (c) => QRValidationResultScreen(result: validated)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (c) => QRValidationResultScreen(result: validated)));
       // resume camera when returning
       controller?.resumeCamera();
     });
@@ -43,7 +46,12 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       appBar: AppBar(title: const Text('QR Scanner')),
       body: Column(children: [
         Expanded(child: QRView(key: qrKey, onQRViewCreated: _onQRViewCreated)),
-        Container(height: 88, color: Colors.black12, alignment: Alignment.center, child: Text(_result ?? 'Scan a pass', style: const TextStyle(fontSize: 18)))
+        Container(
+            height: 88,
+            color: Colors.black12,
+            alignment: Alignment.center,
+            child: Text(_result ?? 'Scan a pass',
+                style: const TextStyle(fontSize: 18)))
       ]),
     );
   }

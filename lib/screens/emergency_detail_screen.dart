@@ -36,20 +36,25 @@ class _EmergencyDetailScreenState extends State<EmergencyDetailScreen> {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Flat: ${e['flat'] ?? ''}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text('Flat: ${e['flat'] ?? ''}',
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text('Resident: ${e['resident'] ?? ''}'),
           const SizedBox(height: 8),
           Text('Time: ${e['time'] ?? ''}'),
           const SizedBox(height: 16),
           if (_processing) const Center(child: CircularProgressIndicator()),
-          if (!(_processing)) Row(children: [
-            ElevatedButton(onPressed: _ack, child: const Text('ACKNOWLEDGE')),
-            const SizedBox(width: 8),
-            ElevatedButton(onPressed: () => _callResident(e), child: const Text('CALL RESIDENT')),
-            const SizedBox(width: 8),
-            ElevatedButton(onPressed: _resolve, child: const Text('RESOLVE')),
-          ])
+          if (!(_processing))
+            Row(children: [
+              ElevatedButton(onPressed: _ack, child: const Text('ACKNOWLEDGE')),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                  onPressed: () => _callResident(e),
+                  child: const Text('CALL RESIDENT')),
+              const SizedBox(width: 8),
+              ElevatedButton(onPressed: _resolve, child: const Text('RESOLVE')),
+            ])
         ]),
       ),
     );
@@ -59,9 +64,24 @@ class _EmergencyDetailScreenState extends State<EmergencyDetailScreen> {
     final phone = e['phone']?.toString();
     if (phone != null && phone.isNotEmpty) {
       // On device we'd use url_launcher to call; here we just show a dialog
-      showDialog(context: context, builder: (c) => AlertDialog(title: const Text('Call Resident'), content: Text('Call $phone?'), actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('Cancel')), TextButton(onPressed: () { Navigator.pop(c); }, child: const Text('OK'))]));
+      showDialog(
+          context: context,
+          builder: (c) => AlertDialog(
+                  title: const Text('Call Resident'),
+                  content: Text('Call $phone?'),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(c),
+                        child: const Text('Cancel')),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(c);
+                        },
+                        child: const Text('OK'))
+                  ]));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No phone number')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No phone number')));
     }
   }
 }
